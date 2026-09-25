@@ -85,9 +85,9 @@
     </div>
 
     <script>
-        // ENTER YOUR GOOGLE SHEETS CSV LINKS HERE (Make sure they end with output=csv)
-        const SALES_CSV_URL = 'PASTE_SALES_DATA_CSV_LINK_HERE';
-        const BCG_CSV_URL = 'PASTE_BCG_DATA_CSV_LINK_HERE';
+        // ENTER YOUR GOOGLE SHEETS CSV LINKS HERE (Make sure the link ends with output=csv)
+        const SALES_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSK4ckSE3VUIY0j-vD2pbu9Jkb1vcRfABnE1DKFSpF5VxaDG5oIrmZLEkoi6GyDYM0T4GMuK0kqeIzs/pub?gid=632787114&single=true&output=csv';
+        const BCG_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSK4ckSE3VUIY0j-vD2pbu9Jkb1vcRfABnE1DKFSpF5VxaDG5oIrmZLEkoi6GyDYM0T4GMuK0kqeIzs/pub?gid=1804533815&single=true&output=csv';
         
         let chartInstance = null;
 
