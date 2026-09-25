@@ -44,7 +44,7 @@
 
     <div class="container">
         <div class="title">Business Performance</div>
-        <div class="subtitle">Revenue, Spend, and Traffic from Google Sheets API</div>
+        <div class="subtitle">Revenue, Spend, and Traffic from Google Sheets CSV</div>
 
         <!-- Filters -->
         <div class="filters">
@@ -85,10 +85,35 @@
     </div>
 
     <script>
-        // ENTER YOUR GOOGLE SCRIPT WEB APP URL HERE
-        const API_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSK4ckSE3VUIY0j-vD2pbu9Jkb1vcRfABnE1DKFSpF5VxaDG5oIrmZLEkoi6GyDYM0T4GMuK0kqeIzs/pubhtml';
+        // ENTER YOUR GOOGLE SHEETS CSV LINKS HERE (Make sure they end with output=csv)
+        const SALES_CSV_URL = 'PASTE_SALES_DATA_CSV_LINK_HERE';
+        const BCG_CSV_URL = 'PASTE_BCG_DATA_CSV_LINK_HERE';
         
         let chartInstance = null;
+
+        // Function to convert CSV text to JavaScript Objects
+        function csvToObjects(csvText) {
+            const lines = csvText.split('\n');
+            const result = [];
+            const headers = lines[0].split(',').map(h => h.trim());
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                // Split by comma, handling commas inside quotes
+                const currentline = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const obj = {};
+                for (let j = 0; j < headers.length; j++) {
+                    let val = currentline[j] ? currentline[j].trim() : '';
+                    // Remove quotes if present
+                    if(val.startsWith('"') && val.endsWith('"')) {
+                        val = val.substring(1, val.length - 1);
+                    }
+                    obj[headers[j]] = val;
+                }
+                result.push(obj);
+            }
+            return result;
+        }
 
         async function fetchData() {
             document.getElementById('loader').style.display = 'block';
@@ -96,21 +121,30 @@
             document.getElementById('chartContent').style.display = 'none';
 
             try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
+                // Fetch both CSV files at the same time
+                const [salesResponse, bcgResponse] = await Promise.all([
+                    fetch(SALES_CSV_URL),
+                    fetch(BCG_CSV_URL)
+                ]);
+
+                const salesText = await salesResponse.text();
+                const bcgText = await bcgResponse.text();
                 
-                processData(data);
+                const salesData = csvToObjects(salesText);
+                const bcgData = csvToObjects(bcgText);
+                
+                processData(salesData, bcgData);
                 
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('dashboardContent').style.display = 'flex';
                 document.getElementById('chartContent').style.display = 'block';
             } catch (error) {
-                document.getElementById('loader').innerText = "Error loading data. Please check the URL.";
+                document.getElementById('loader').innerText = "Error loading data. Please check the CSV URLs.";
                 console.error(error);
             }
         }
 
-        function processData(data) {
+        function processData(sales, bcg) {
             let totalRevenue = 0;
             let totalTraffic = 0;
             let totalSpend = 0;
@@ -118,16 +152,16 @@
             let revenueData = [];
 
             // Calculate Revenue & Traffic from Sales Data
-            data.sales.forEach(row => {
+            sales.forEach(row => {
                 let rev = parseFloat(row['Revenue']) || 0;
                 let traffic = parseFloat(row['Glance Views']) || 0;
                 totalRevenue += rev;
                 totalTraffic += traffic;
                 
                 // For graph (limiting to first 30 points for clean UI)
-                if(dateLabels.length < 30) {
+                if(dateLabels.length < 30 && row['Date']) {
                     let d = new Date(row['Date']).toLocaleDateString('en-GB');
-                    if(d !== 'Invalid Date') {
+                    if(d !== 'Invalid Date' && !dateLabels.includes(d)) {
                         dateLabels.push(d);
                         revenueData.push(rev);
                     }
@@ -135,7 +169,7 @@
             });
 
             // Calculate Spend from BCG Data
-            data.spend.forEach(row => {
+            bcg.forEach(row => {
                 totalSpend += parseFloat(row['Spend']) || 0;
             });
 
