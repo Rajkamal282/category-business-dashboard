@@ -86,7 +86,7 @@
 
     <script>
         // ENTER YOUR GOOGLE SCRIPT WEB APP URL HERE
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzkFXI9dAsWVhID_XJJdo42VnKU3YS-AcDUzBYhQ-6AznhGX7GCfzq467dObXUVqa9I/exec';
+        const API_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSK4ckSE3VUIY0j-vD2pbu9Jkb1vcRfABnE1DKFSpF5VxaDG5oIrmZLEkoi6GyDYM0T4GMuK0kqeIzs/pubhtml';
         
         let chartInstance = null;
 
