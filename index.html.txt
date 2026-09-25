@@ -60,7 +60,7 @@
             <button onclick="fetchData()" style="margin-top: 20px; padding: 0 20px; background: #fff; border: 1px solid #d35400; color: #d35400; border-radius: 4px; cursor: pointer;">Refresh Data</button>
         </div>
 
-        <div id="loader" class="loading">Sheet Se Data Load Ho Raha Hai... Please wait.</div>
+        <div id="loader" class="loading">Loading data from the sheet... Please wait.</div>
 
         <!-- Scorecards -->
         <div class="scorecard-container" id="dashboardContent" style="display: none;">
@@ -85,8 +85,8 @@
     </div>
 
     <script>
-        // YAHAN APNA GOOGLE SCRIPT WEB APP URL DALEIN
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzaE_VtxHkcRC87Jvl1LYqWfs0teiyyumtBRvI_lyIPiMjFVFrqGchm1_KnASCMpMrw/exec';
+        // ENTER YOUR GOOGLE SCRIPT WEB APP URL HERE
+        const API_URL = 'https://script.google.com/macros/s/AKfycbzkFXI9dAsWVhID_XJJdo42VnKU3YS-AcDUzBYhQ-6AznhGX7GCfzq467dObXUVqa9I/exec';
         
         let chartInstance = null;
 
@@ -105,7 +105,7 @@
                 document.getElementById('dashboardContent').style.display = 'flex';
                 document.getElementById('chartContent').style.display = 'block';
             } catch (error) {
-                document.getElementById('loader').innerText = "Data load karne me error aayi. Kripya URL check karein.";
+                document.getElementById('loader').innerText = "Error loading data. Please check the URL.";
                 console.error(error);
             }
         }
